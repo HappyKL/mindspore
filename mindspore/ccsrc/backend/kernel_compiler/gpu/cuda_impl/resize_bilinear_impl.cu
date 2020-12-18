@@ -79,7 +79,9 @@ __global__ void ResizeBilinear(const int size, const T *input, const int s1, con
 //    // pos_array[0] N, pos_array[1] C, in_y H, in_x W
 //    input_pos = pos_array[0] * s2 * s3 * s4 + pos_array[1] * s3 * s4 + in_y * s4 + in_x;
 //    output[pos] = input[input_pos];
-      output[pos] = val;
+      const int w2 = pos % d4; // 0:width2-1
+      const int h2 = index / d4; // 0:height2-1
+      output[pos_array[0] * d2 * d3 * d4 + pos_array[1] * d3 * d4 + h2 * d4 + w2] = val;
   }
   return;
 }
