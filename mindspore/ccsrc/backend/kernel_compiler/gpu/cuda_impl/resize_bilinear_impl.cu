@@ -49,15 +49,15 @@ __global__ void ResizeBilinear(const int size, const T *input, const int s1, con
 //    out_w = pos_array[3];
 
 
-    const int w2 = pos % d4; // 0:width2-1
-    const int h2 = pos / d4; // 0:height2-1
+    int w2 = pos % d4; // 0:width2-1
+    int h2 = pos / d4; // 0:height2-1
+
 
     T hlr;
     if (align_corners) {
-        hlr =  h_scale * h2;
+        hlr =  static_cast<T>h_scale * static_cast<T>h2;
     } else {
-        T src_idx = h_scale * (h2 + static_cast<T>(0.5)) -
-            static_cast<T>(0.5);
+        T src_idx = static_cast<T>h_scale * (h2 + static_cast<T>(0.5)) - static_cast<T>(0.5);
         // See Note[Follow Opencv resize logic]
         hlr = (src_idx < static_cast<T>(0))
         ? static_cast<T>(0)
@@ -71,10 +71,9 @@ __global__ void ResizeBilinear(const int size, const T *input, const int s1, con
 
     T wlr;
     if (align_corners) {
-        wlr =  w_scale * w2;
+        wlr =  static_cast<T>w_scale * static_cast<T>w2;
     } else {
-        T src_idx = w_scale * (w2 + static_cast<T>(0.5)) -
-            static_cast<T>(0.5);
+        T src_idx = static_cast<T>w_scale * (w2 + static_cast<T>(0.5)) - static_cast<T>(0.5);
         // See Note[Follow Opencv resize logic]
         wlr = (src_idx < static_cast<T>(0))
         ? static_cast<T>(0)
