@@ -48,14 +48,41 @@ __global__ void ResizeBilinear(const int size, const T *input, const int s1, con
 //    out_h = pos_array[2];
 //    out_w = pos_array[3];
 
-    const int h1 = h_scale;
+
+    const int w2 = pos % d4; // 0:width2-1
+    const int h2 = pos / d4; // 0:height2-1
+
+    const T hlr;
+    if (align_corners) {
+        hlr =  h_scale * h2;
+    } else {
+        T src_idx = h_scale * (h2 + static_cast<T>(0.5)) -
+            static_cast<T>(0.5);
+        // See Note[Follow Opencv resize logic]
+        hlr = (src_idx < static_cast<T>(0))
+        ? static_cast<T>(0)
+        : src_idx;
+    }
+    const int h1 = hlr;
     const int hlp = (h1 < s3 - 1) ? 1:0;
-    const T h1lambda = h_scale - h1;
+    const T h1lambda = hlr - h1;
     const T h0lambda = static_cast<T>(1) - h1lambda;
 
-    const int w1 = w_scale;
+
+    const T wlr;
+    if (align_corners) {
+        wlr =  w_scale * w2;
+    } else {
+        T src_idx = w_scale * (w2 + static_cast<T>(0.5)) -
+            static_cast<T>(0.5);
+        // See Note[Follow Opencv resize logic]
+        wlr = (src_idx < static_cast<T>(0))
+        ? static_cast<T>(0)
+        : src_idx;
+    }
+    const int w1 = wlr;
     const int wlp = (w1 < s4 -1 )? 1:0;
-    const T w1lambda = w_scale - w1;
+    const T w1lambda = wlr - w1;
     const T w0lambda = static_cast<T>(1) - w1lambda;
 
     input_pos1 = pos_array[0] * s2 * s3 * s4 + pos_array[1] * s3 * s4 + h1 * s4 + w1;
@@ -79,9 +106,7 @@ __global__ void ResizeBilinear(const int size, const T *input, const int s1, con
 //    // pos_array[0] N, pos_array[1] C, in_y H, in_x W
 //    input_pos = pos_array[0] * s2 * s3 * s4 + pos_array[1] * s3 * s4 + in_y * s4 + in_x;
 //    output[pos] = input[input_pos];
-      const int w2 = pos % d4; // 0:width2-1
-      const int h2 = pos / d4; // 0:height2-1
-      output[pos_array[0] * d2 * d3 * d4 + pos_array[1] * d3 * d4 + h2 * d4 + w2] = val;
+      output[pos] = val;
   }
   return;
 }
