@@ -61,9 +61,9 @@ class ResizeBilinearGpuKernel : public GpuKernel {
     auto input_shape = AnfAlgo::GetPrevNodeOutputInferShape(kernel_node, 0);
     shape_size_ = input_shape.size();
     auto output_shape = AnfAlgo::GetOutputInferShape(kernel_node, 0);
-    if (shape_size_ != RESIZENEARESTNEIGHBOR_DIMENSION) {
+    if (shape_size_ != RESIZBILINEAR_DIMENSION) {
       MS_LOG(ERROR) << "Input is " << shape_size_ << "-D, but ResizeBinear supports only "
-                    << RESIZENEARESTNEIGHBOR_DIMENSION << "-D inputs.";
+                    << RESIZBILINEAR_DIMENSION << "-D inputs.";
       return false;
     }
     input_size_ = 1;

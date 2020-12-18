@@ -18,14 +18,14 @@
 
 namespace mindspore {
 namespace kernel {
-MS_REG_GPU_KERNEL_ONE(ResizeNearestNeighborGrad,
+MS_REG_GPU_KERNEL_ONE(ResizeBilinearGrad,
                       KernelAttr().AddInputAttr(kNumberTypeFloat32).AddOutputAttr(kNumberTypeFloat32),
-                      ResizeNearestNeighborGradGpuKernel, float)
-MS_REG_GPU_KERNEL_ONE(ResizeNearestNeighborGrad,
+                      ResizeBilinearGradGpuKernel, float)
+MS_REG_GPU_KERNEL_ONE(ResizeBilinearGrad,
                       KernelAttr().AddInputAttr(kNumberTypeFloat16).AddOutputAttr(kNumberTypeFloat16),
-                      ResizeNearestNeighborGradGpuKernel, half)
-MS_REG_GPU_KERNEL_ONE(ResizeNearestNeighborGrad,
+                      ResizeBilinearGradGpuKernel, half)
+MS_REG_GPU_KERNEL_ONE(ResizeBilinearGrad,
                       KernelAttr().AddInputAttr(kNumberTypeInt32).AddOutputAttr(kNumberTypeInt32),
-                      ResizeNearestNeighborGradGpuKernel, int)
+                      ResizeBilinearGradGpuKernel, int)
 }  // namespace kernel
 }  // namespace mindspore
