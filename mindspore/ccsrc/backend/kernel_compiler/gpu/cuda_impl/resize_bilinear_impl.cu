@@ -26,32 +26,60 @@ __global__ void ResizeBilinear(const int size, const T *input, const int s1, con
                                       bool align_corners, float h_scale, float w_scale) {
   // initialization
   // HalfPixelCenters false
-  int input_pos;
+  int input_pos1;
+  int input_pos2;
+  int input_pos3;
+  int input_pos4;
   int pos_array[RESIZEBILINEAR_DIMENSION];
-  int in_height = s3;
-  int in_width = s4;
+//  int in_height = s3;
+//  int in_width = s4;
   // for example 4-D: pos = pos_array[0] * output_shape[1] * output_shape[2] * output_shape[3] +
   //                        pos_array[1] * output_shape[2] * output_shape[3] +
   //                        pos_array[2] * output_shape[3] +
   //                        pos_array[3]
   int out_h;
   int out_w;
+
   for (size_t pos = blockIdx.x * blockDim.x + threadIdx.x; pos < (size); pos += blockDim.x * gridDim.x) {
     pos_array[0] = pos / (d2 * d3 * d4) % d1;
     pos_array[1] = pos / (d3 * d4) % d2;
     pos_array[2] = pos / (d4) % d3;
     pos_array[3] = pos % d4;
-    out_h = pos_array[2];
-    out_w = pos_array[3];
-    const int in_y =
-      min((align_corners) ? static_cast<int>(roundf(out_h * h_scale)) : static_cast<int>(floorf(out_h * h_scale)),
-          in_height - 1);
-    const int in_x =
-      min((align_corners) ? static_cast<int>(roundf(out_w * w_scale)) : static_cast<int>(floorf(out_w * w_scale)),
-          in_width - 1);
-    // pos_array[0] N, pos_array[1] C, in_y H, in_x W
-    input_pos = pos_array[0] * s2 * s3 * s4 + pos_array[1] * s3 * s4 + in_y * s4 + in_x;
-    output[pos] = input[input_pos];
+//    out_h = pos_array[2];
+//    out_w = pos_array[3];
+
+    const int h1 = h_scale;
+    const int hlp = (h1 < s3 - 1) ? 1:0;
+    const T h1lambda = h_scale - h1;
+    const T h0lambda = static_cast<T>(1) - h1lambda;
+
+    const int w1 = w_scale;
+    const int wlp = (w1 < s4 -1 )? 1:0;
+    const T w1lambda = wlr - w1;
+    const T w0lambda = static_cast<T>(1) - w1lambda;
+
+    input_pos1 = pos_array[0] * s2 * s3 * s4 + pos_array[1] * s3 * s4 + h1 * s4 + w1;
+    input_pos2 = pos_array[0] * s2 * s3 * s4 + pos_array[1] * s3 * s4 + h1 * s4 + w1 + wlp;
+    input_pos3 = pos_array[0] * s2 * s3 * s4 + pos_array[1] * s3 * s4 + (h1 + h1p) * s4 + w1;
+    input_pos4 = pos_array[0] * s2 * s3 * s4 + pos_array[1] * s3 * s4 + (h1 + h1p) * s4 + w1 + wlp;
+
+    const T val = h0lambda *
+                (w0lambda * input[input_pos1] +
+                 w1lambda * idata[input_pos2]) +
+            h1lambda *
+                (w0lambda * idata[input_pos3] +
+                 w1lambda * idata[input_pos4]);
+
+//    const int in_y =
+//      min((align_corners) ? static_cast<int>(roundf(out_h * h_scale)) : static_cast<int>(floorf(out_h * h_scale)),
+//          in_height - 1);
+//    const int in_x =
+//      min((align_corners) ? static_cast<int>(roundf(out_w * w_scale)) : static_cast<int>(floorf(out_w * w_scale)),
+//          in_width - 1);
+//    // pos_array[0] N, pos_array[1] C, in_y H, in_x W
+//    input_pos = pos_array[0] * s2 * s3 * s4 + pos_array[1] * s3 * s4 + in_y * s4 + in_x;
+//    output[pos] = input[input_pos];
+      output[pos] = val;
   }
   return;
 }
