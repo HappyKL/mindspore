@@ -18,7 +18,7 @@
 #define MINDSPORE_CCSRC_BACKEND_KERNEL_COMPILER_GPU_CUDA_IMPL_RESIZE_BILINEAR_IMPL_CUH_
 #include <cuda_runtime.h>
 #include "runtime/device/gpu/cuda_common.h"
-#define RESIZBILINEAR_DIMENSION 4
+#define RESIZEBILINEAR_DIMENSION 4
 
 template <typename T>
 void CalResizeBilinear(const int size, const T *input, const int s1, const int s2, const int s3, const int s4,
