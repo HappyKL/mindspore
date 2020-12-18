@@ -52,7 +52,7 @@ __global__ void ResizeBilinear(const int size, const T *input, const int s1, con
     const int w2 = pos % d4; // 0:width2-1
     const int h2 = pos / d4; // 0:height2-1
 
-    const T hlr;
+    T hlr;
     if (align_corners) {
         hlr =  h_scale * h2;
     } else {
@@ -69,7 +69,7 @@ __global__ void ResizeBilinear(const int size, const T *input, const int s1, con
     const T h0lambda = static_cast<T>(1) - h1lambda;
 
 
-    const T wlr;
+    T wlr;
     if (align_corners) {
         wlr =  w_scale * w2;
     } else {
