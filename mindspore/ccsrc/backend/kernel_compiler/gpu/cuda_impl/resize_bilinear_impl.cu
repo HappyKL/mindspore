@@ -37,8 +37,8 @@ __global__ void ResizeBilinear(const int size, const T *input, const int s1, con
   //                        pos_array[1] * output_shape[2] * output_shape[3] +
   //                        pos_array[2] * output_shape[3] +
   //                        pos_array[3]
-  int out_h;
-  int out_w;
+//  int out_h;
+//  int out_w;
 
   for (size_t pos = blockIdx.x * blockDim.x + threadIdx.x; pos < (size); pos += blockDim.x * gridDim.x) {
     pos_array[0] = pos / (d2 * d3 * d4) % d1;
@@ -55,20 +55,20 @@ __global__ void ResizeBilinear(const int size, const T *input, const int s1, con
 
     const int w1 = w_scale;
     const int wlp = (w1 < s4 -1 )? 1:0;
-    const T w1lambda = wlr - w1;
+    const T w1lambda = w_scale - w1;
     const T w0lambda = static_cast<T>(1) - w1lambda;
 
     input_pos1 = pos_array[0] * s2 * s3 * s4 + pos_array[1] * s3 * s4 + h1 * s4 + w1;
     input_pos2 = pos_array[0] * s2 * s3 * s4 + pos_array[1] * s3 * s4 + h1 * s4 + w1 + wlp;
-    input_pos3 = pos_array[0] * s2 * s3 * s4 + pos_array[1] * s3 * s4 + (h1 + h1p) * s4 + w1;
-    input_pos4 = pos_array[0] * s2 * s3 * s4 + pos_array[1] * s3 * s4 + (h1 + h1p) * s4 + w1 + wlp;
+    input_pos3 = pos_array[0] * s2 * s3 * s4 + pos_array[1] * s3 * s4 + (h1 + hlp) * s4 + w1;
+    input_pos4 = pos_array[0] * s2 * s3 * s4 + pos_array[1] * s3 * s4 + (h1 + hlp) * s4 + w1 + wlp;
 
     const T val = h0lambda *
                 (w0lambda * input[input_pos1] +
-                 w1lambda * idata[input_pos2]) +
+                 w1lambda * input[input_pos2]) +
             h1lambda *
-                (w0lambda * idata[input_pos3] +
-                 w1lambda * idata[input_pos4]);
+                (w0lambda * input[input_pos3] +
+                 w1lambda * input[input_pos4]);
 
 //    const int in_y =
 //      min((align_corners) ? static_cast<int>(roundf(out_h * h_scale)) : static_cast<int>(floorf(out_h * h_scale)),
