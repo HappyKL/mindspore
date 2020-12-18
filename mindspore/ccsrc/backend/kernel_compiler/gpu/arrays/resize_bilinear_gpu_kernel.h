@@ -50,19 +50,19 @@ class ResizeBilinearGpuKernel : public GpuKernel {
   bool Init(const CNodePtr &kernel_node) override {
     size_t input_num = AnfAlgo::GetInputTensorNum(kernel_node);
     if (input_num != 1) {
-      MS_LOG(ERROR) << "Input number is " << input_num << ", but ResizeBinear needs 1 input.";
+      MS_LOG(ERROR) << "Input number is " << input_num << ", but ResizeBilinear needs 1 input.";
       return false;
     }
     size_t output_num = AnfAlgo::GetOutputTensorNum(kernel_node);
     if (output_num != 1) {
-      MS_LOG(ERROR) << "Output number is " << output_num << ", but ResizeBinear has 1 output.";
+      MS_LOG(ERROR) << "Output number is " << output_num << ", but ResizeBilinear has 1 output.";
       return false;
     }
     auto input_shape = AnfAlgo::GetPrevNodeOutputInferShape(kernel_node, 0);
     shape_size_ = input_shape.size();
     auto output_shape = AnfAlgo::GetOutputInferShape(kernel_node, 0);
     if (shape_size_ != RESIZBILINEAR_DIMENSION) {
-      MS_LOG(ERROR) << "Input is " << shape_size_ << "-D, but ResizeBinear supports only "
+      MS_LOG(ERROR) << "Input is " << shape_size_ << "-D, but ResizeBilinear supports only "
                     << RESIZBILINEAR_DIMENSION << "-D inputs.";
       return false;
     }
