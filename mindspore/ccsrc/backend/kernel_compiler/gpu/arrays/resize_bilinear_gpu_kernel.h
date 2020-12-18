@@ -41,7 +41,7 @@ class ResizeBilinearGpuKernel : public GpuKernel {
     int size = SizeToInt(output_size_ / sizeof(T));
     float h_scale = Scaling(input_shape_[2], output_shape_[2], align_corners_);
     float w_scale = Scaling(input_shape_[3], output_shape_[3], align_corners_);
-    CalResizeBinear(size, input, input_shape_[0], input_shape_[1], input_shape_[2], input_shape_[3], output,
+    CalResizeBilinear(size, input, input_shape_[0], input_shape_[1], input_shape_[2], input_shape_[3], output,
                              output_shape_[0], output_shape_[1], output_shape_[2], output_shape_[3], align_corners_,
                              h_scale, w_scale, reinterpret_cast<cudaStream_t>(stream_ptr));
     return true;
