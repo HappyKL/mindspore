@@ -35,10 +35,13 @@ __global__ void ResizeBilinearGrad(const int input_size, const T *input, const i
                                           float w_scale) {
   // initialization
   // HalfPixelCenters false
-  int output_pos;
+  int output_pos1;
+  int output_pos2;
+  int output_pos3;
+  int output_pos4;
   int pos_array[RESIZEBILINEAR_DIMENSION];
-  int out_height = d3;
-  int out_width = d4;
+//  int out_height = d3;
+//  int out_width = d4;
   // for example 4-D: pos = pos_array[0] * output_shape[1] * output_shape[2] * output_shape[3] +
   //                        pos_array[1] * output_shape[2] * output_shape[3] +
   //                        pos_array[2] * output_shape[3] +
@@ -53,15 +56,47 @@ __global__ void ResizeBilinearGrad(const int input_size, const T *input, const i
     pos_array[3] = pos % s4;
     in_h = pos_array[2];
     in_w = pos_array[3];
-    const int out_y =
-      min((align_corners) ? static_cast<int>(roundf(in_h * h_scale)) : static_cast<int>(floorf(in_h * h_scale)),
-          out_height - 1);
-    const int out_x =
-      min((align_corners) ? static_cast<int>(roundf(in_w * w_scale)) : static_cast<int>(floorf(in_w * w_scale)),
-          out_width - 1);
-    // pos_array[0] N, pos_array[1] C, out_y H, out_x W
-    output_pos = pos_array[0] * d2 * d3 * d4 + pos_array[1] * d3 * d4 + out_y * d4 + out_x;
-    MsAtomicAdd(&output[output_pos], input[pos]);
+
+     T hlr;
+    if (align_corners) {
+        hlr =  static_cast<T>(h_scale) * static_cast<T>(in_h);
+    } else {
+        T src_idx = static_cast<T>(h_scale) * (static_cast<T>(in_h) + static_cast<T>(0.5)) - static_cast<T>(0.5);
+        // See Note[Follow Opencv resize logic]
+        hlr = (src_idx < static_cast<T>(0))
+        ? static_cast<T>(0)
+        : src_idx;
+    }
+    const int h1 = hlr;
+    const int hlp = (h1 < d3 - 1) ? 1:0;
+    const T h1lambda = hlr - static_cast<T>(in_h);
+    const T h0lambda = static_cast<T>(1) - h1lambda;
+
+     T wlr;
+    if (align_corners) {
+        wlr =  static_cast<T>(w_scale) * static_cast<T>(in_w);
+    } else {
+        T src_idx = static_cast<T>(w_scale) * (static_cast<T>(in_w) + static_cast<T>(0.5)) - static_cast<T>(0.5);
+        // See Note[Follow Opencv resize logic]
+        wlr = (src_idx < static_cast<T>(0))
+        ? static_cast<T>(0)
+        : src_idx;
+    }
+    const int w1 = wlr;
+    const int wlp = (w1 < d4 -1 )? 1:0;
+    const T w1lambda = wlr -static_cast<T>(in_w);
+    const T w0lambda = static_cast<T>(1) - w1lambda;
+
+    output_pos1 = pos_array[0] * d2 * d3 * d4 + pos_array[1] * d3 * d4 + h1 * d4 + w1;
+    output_pos2 = pos_array[0] * d2 * d3 * d4 + pos_array[1] * d3 * d4 + h1 * d4 + w1 + wlp;
+    output_pos3 = pos_array[0] * d2 * d3 * d4 + pos_array[1] * d3 * d4 + (h1 + hlp) * d4 + w1;
+    output_pos4 = pos_array[0] * d2 * d3 * d4 + pos_array[1] * d3 * d4 + (h1 + hlp) * d4 + w1 + wlp;
+
+    MsAtomicAdd(&output[output_pos1], static_cast<T>(h0lambda * w0lambda * input[pos]))
+    MsAtomicAdd(&output[output_pos2], static_cast<T>(h0lambda * w1lambda * input[pos]))
+    MsAtomicAdd(&output[output_pos3], static_cast<T>(h1lambda * w0lambda * input[pos]))
+    MsAtomicAdd(&output[output_pos4], static_cast<T>(h1lambda * w1lambda * input[pos]))
+
   }
 }
 
