@@ -92,10 +92,10 @@ __global__ void ResizeBilinearGrad(const int input_size, const T *input, const i
     output_pos3 = pos_array[0] * d2 * d3 * d4 + pos_array[1] * d3 * d4 + (h1 + hlp) * d4 + w1;
     output_pos4 = pos_array[0] * d2 * d3 * d4 + pos_array[1] * d3 * d4 + (h1 + hlp) * d4 + w1 + wlp;
 
-    MsAtomicAdd(&output[output_pos1], static_cast<T>(h0lambda * w0lambda * input[pos]))
-    MsAtomicAdd(&output[output_pos2], static_cast<T>(h0lambda * w1lambda * input[pos]))
-    MsAtomicAdd(&output[output_pos3], static_cast<T>(h1lambda * w0lambda * input[pos]))
-    MsAtomicAdd(&output[output_pos4], static_cast<T>(h1lambda * w1lambda * input[pos]))
+    MsAtomicAdd(&output[output_pos1], static_cast<T>(h0lambda * w0lambda * input[pos]));
+    MsAtomicAdd(&output[output_pos2], static_cast<T>(h0lambda * w1lambda * input[pos]));
+    MsAtomicAdd(&output[output_pos3], static_cast<T>(h1lambda * w0lambda * input[pos]));
+    MsAtomicAdd(&output[output_pos4], static_cast<T>(h1lambda * w1lambda * input[pos]));
 
   }
 }
