@@ -69,21 +69,15 @@ class ResizeBilinearGradGpuKernel : public GpuKernel {
     input_size_ = 1;
     for (size_t i = 0; i < shape_size_; i++) {
       input_size_ *= input_shape[i];
-      MS_LOG(ERROR) << "input_shape " << i << ":" << input_shape[i] << "end.";
       input_shape_.push_back(input_shape[i]);
     }
-    MS_LOG(ERROR) << "Input shape " << input_size_ << "end.";
     input_size_ *= sizeof(T);
-    MS_LOG(ERROR) << "Input size " << input_size_ << "end.";
     output_size_ = 1;
     for (size_t i = 0; i < shape_size_; i++) {
       output_size_ *= output_shape[i];
-      MS_LOG(ERROR) << "output_shape " << i << ":" << output_shape[i] << "end.";
       output_shape_.push_back(output_shape[i]);
     }
-    MS_LOG(ERROR) << "Output shape " << output_size_ << "end.";
     output_size_ *= sizeof(T);
-     MS_LOG(ERROR) << "Out size " << output_size_ << "end.";
     align_corners_ = GetAttr<bool>(kernel_node, "align_corners");
     InitSizeLists();
     return true;
