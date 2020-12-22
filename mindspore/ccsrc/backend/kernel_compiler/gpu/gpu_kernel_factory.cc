@@ -41,6 +41,7 @@ void GpuKernelFactory::CheckIOParam(const std::string &kernel_name, const Kernel
                                     size_t attr_index) {
   if (kernel_info->GetInputNum() != iter_second->at(attr_index).first.GetInputSize()) {
     if (!iter_second->at(attr_index).first.GetAllSame()) {
+      MS_LOG(INFO) << "kernel_info-?getinputnum: " << kernel_info->GetInputNum() << ", first.getinputsize" << iter_second->at(attr_index).first.GetInputSize()<< "end.";
       MS_LOG(EXCEPTION) << "op[" << kernel_name << "] Input size is mismatching!";
     }
   }
