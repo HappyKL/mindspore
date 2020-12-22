@@ -49,13 +49,13 @@ class ResizeBilinearGradGpuKernel : public GpuKernel {
 
   bool Init(const CNodePtr &kernel_node) override {
     size_t input_num = AnfAlgo::GetInputTensorNum(kernel_node);
-    if (input_num != 1) {
-      MS_LOG(ERROR) << "Input number is " << input_num << ", but ResizeBilinear needs 1 input.";
+    if (input_num != 2) {
+      MS_LOG(ERROR) << "Input number is " << input_num << ", but ResizeBilinearGrad needs 2 input.";
       return false;
     }
     size_t output_num = AnfAlgo::GetOutputTensorNum(kernel_node);
     if (output_num != 1) {
-      MS_LOG(ERROR) << "Output number is " << output_num << ", but ResizeBilinear has 1 output.";
+      MS_LOG(ERROR) << "Output number is " << output_num << ", but ResizeBilinearGrad has 1 output.";
       return false;
     }
     auto input_shape = AnfAlgo::GetPrevNodeOutputInferShape(kernel_node, 0);
