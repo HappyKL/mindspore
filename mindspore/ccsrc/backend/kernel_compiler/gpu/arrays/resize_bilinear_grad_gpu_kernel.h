@@ -72,9 +72,9 @@ class ResizeBilinearGradGpuKernel : public GpuKernel {
       MS_LOG(INFO) << "input_shape " << i << ":" << input_shape[i] << "end.";
       input_shape_.push_back(input_shape[i]);
     }
-    MS_LOG(INFO) << "Input shape " << input_size << "end.";
+    MS_LOG(INFO) << "Input shape " << input_size_ << "end.";
     input_size_ *= sizeof(T);
-    MS_LOG(INFO) << "Input size " << input_size << "end.";
+    MS_LOG(INFO) << "Input size " << input_size_ << "end.";
     output_size_ = 1;
     for (size_t i = 0; i < shape_size_; i++) {
       output_size_ *= output_shape[i];
