@@ -49,8 +49,8 @@ class ResizeNearestNeighborGpuKernel : public GpuKernel {
 
   bool Init(const CNodePtr &kernel_node) override {
     size_t input_num = AnfAlgo::GetInputTensorNum(kernel_node);
-    if (input_num != 1) {
-      MS_LOG(ERROR) << "Input number is " << input_num << ", but ResizeNearestNeighbor needs 1 input.";
+    if (input_num != 2) {
+      MS_LOG(ERROR) << "Input number is " << input_num << ", but ResizeNearestNeighbor needs 2 input.";
       return false;
     }
     size_t output_num = AnfAlgo::GetOutputTensorNum(kernel_node);
