@@ -25,7 +25,7 @@ MS_REG_GPU_KERNEL_ONE(ResizeBilinearGrad,
                       KernelAttr().AddInputAttr(kNumberTypeFloat16).AddInputAttr(kNumberTypeFloat16).AddOutputAttr(kNumberTypeFloat16),
                       ResizeBilinearGradGpuKernel, half)
 MS_REG_GPU_KERNEL_ONE(ResizeBilinearGrad,
-                      KernelAttr().AddInputAttr(kNumberTypeInt32)..AddInputAttr(kNumberTypeInt32).AddOutputAttr(kNumberTypeInt32),
+                      KernelAttr().AddInputAttr(kNumberTypeInt32).AddInputAttr(kNumberTypeInt32).AddOutputAttr(kNumberTypeInt32),
                       ResizeBilinearGradGpuKernel, int)
 }  // namespace kernel
 }  // namespace mindspore
