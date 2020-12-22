@@ -39,9 +39,9 @@ void GpuKernelFactory::Register(const std::string &kernel_name, const KernelAttr
 void GpuKernelFactory::CheckIOParam(const std::string &kernel_name, const KernelBuildInfo *kernel_info,
                                     std::vector<std::pair<KernelAttr, GpuKernelCreater>> *iter_second,
                                     size_t attr_index) {
+  MS_LOG(ERROR) << "kernel_info-?getinputnum: " << kernel_info->GetInputNum() << ", first.getinputsize" << iter_second->at(attr_index).first.GetInputSize()<< "end.";
   if (kernel_info->GetInputNum() != iter_second->at(attr_index).first.GetInputSize()) {
     if (!iter_second->at(attr_index).first.GetAllSame()) {
-      MS_LOG(ERROR) << "kernel_info-?getinputnum: " << kernel_info->GetInputNum() << ", first.getinputsize" << iter_second->at(attr_index).first.GetInputSize()<< "end.";
       MS_LOG(EXCEPTION) << "op[" << kernel_name << "] Input size is mismatching!";
     }
   }
